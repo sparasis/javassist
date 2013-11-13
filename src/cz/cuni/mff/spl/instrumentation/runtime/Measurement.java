@@ -12,7 +12,7 @@ public class Measurement {
 	private long start;
 	/** Time when the measurement ends. */
 	private long stop;
-	/** Depth of the recursion call when the measured method runs. */
+	/** Depth of the recursion call when the measured method runs. For first call it starts at 1. */
 	private long recursion;
 	/** ID of the thread where the measured method runs. */
 	private long thread;
@@ -44,7 +44,7 @@ public class Measurement {
 	@Override
 	public String toString() {
 		return "Measurement [start=" + start + ", stop=" + stop
-				+ ", recursion=" + recursion + ", thread=" + thread + ", time is= "+ (stop-start)  + "]";
+				+ ", recursion=" + recursion + ", thread=" + thread + ", time= "+ (stop-start)  + "]";
 	}
 	
 	

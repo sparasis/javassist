@@ -4,11 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-/** Holds data of measurement of single method. Also contains partial times
+/** 
+ * Holds data of measurement of a single method. Also contains partial times
  * of measurements. For every started measurement the time is stored until
  * it ends and after that the difference of the end-start is stored.
  * 
- * It supports recursion and only single thread.
+ * It supports recursion and multiple threads.
  * The time of method run is measured including all methods called in the 
  * measured method. If the same method is called in it then new measurement
  * starts but the first one ends after the program backtrack to the level of
@@ -16,6 +17,7 @@ import java.util.List;
  * 
  * @author Jaroslav Kotrc
  *
+ * TODO review synchronization, is all really needed?
  */
 public class DataHolder{
 	
@@ -75,7 +77,7 @@ public class DataHolder{
 			}
 		}
 		threadStarts.addFirst(measurement);
-		measurement.setRecursion(starts.size());
+		measurement.setRecursion(threadStarts.size());
 		measurement.setThread(threadId);
 		
 		measurement.setStart(System.nanoTime());

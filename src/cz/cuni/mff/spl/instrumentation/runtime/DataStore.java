@@ -87,7 +87,7 @@ public class DataStore {
 	 * @param clazz class of the method
 	 * @param method name of the method
 	 * @param descriptor method descriptor
-	 * @return
+	 * @return data name for specified method
 	 */
 	public static String createDataName(String clazz, String method, String descriptor){
 		return clazz + '#' + method + '(' + descriptor + ')';

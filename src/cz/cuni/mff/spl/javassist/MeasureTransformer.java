@@ -15,12 +15,19 @@ import javassist.NotFoundException;
  */
 public class MeasureTransformer {
 	
-	
+	/**
+	 * Instruments single method of described class
+	 * 
+	 * @param clazz the class of instrumented method
+	 * @param method the instrumented method
+	 * @param descriptor method descriptor
+	 */
 	public static void transform(String clazz, String method, String descriptor){
 
 		ClassPool pool = ClassPool.getDefault();
 		try {
 			CtClass cc = pool.get(clazz);
+			//CtMethod[] cl = cc.getMethods();
 			CtMethod cmethod = cc.getMethod(method, descriptor);
 			String name = cz.cuni.mff.spl.instrumentation.runtime.DataStore.createDataName(clazz, method, descriptor);
 			
