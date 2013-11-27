@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." name="javassist-instrumentation" default="main">
+	<property name="version" value="1.0" />
+
+	<property name="src.dir" value="src" />
+	
+	<property name="build.dir" value="build" />
+	<property name="generated.dir" value="generated" />
+	<property name="classes.dir" value="${build.dir}/classes" />
+	<property name="javadoc.dir" value="${build.dir}/javadoc" />
+	<property name="jar.dir" value="${build.dir}/jar" />
+	<property name="jar.name" value="javassistInstr.jar" />
+	<property name="dist.dir" value="${build.dir}/dist" />
+	<property name="src.dist.dir" value="${build.dir}/src-dist" />
+	<property name="zip.dist.dir" value="${build.dir}/zip-dist" />
+	<property name="zip.dist.name" value="spl-${version}.zip" />
+	<property name="source.dist.name" value="spl-src-${version}" />
+	
+	<property name="lib.dir" value="lib" />
+	
+
+	<path id="classpath">
+		<pathelement location="${classes.dir}" />
+		<pathelement location="${src.dir}" />
+		<path location="${lib.dir}/javassist.jar"/>
+		<path location="${lib.dir}/sortapp.jar"/>
+	</path>
+	
+	<target name="main" depends="bin-dist" />
+	<target name="compile-all" depends="compile-classes" />
+	<target name="world" depends="bin-dist" />
+
+	<target name="compile-classes">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}"
+				includeantruntime="false" classpathref="classpath"
+				debug="true" debuglevel="lines,vars,source" encoding="UTF-8">
+			<compilerarg value="-Xlint:all"/>
+		</javac>
+	</target>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />	
+		<delete dir="${generated.dir}" />
+	</target>	
+	
+	<target name="jar" depends="compile-all">
+		<mkdir dir="${jar.dir}" />
+		<jar destfile="${jar.dir}/${jar.name}" basedir="${classes.dir}">
+			<manifest>
+				<attribute name="Main-Class" value="cz.cuni.mff.spl.javassist.Main" />	
+				<attribute name="Class-path" value="\
+						javassist.jar \
+						sortapp.jar "/>
+			</manifest>
+			<fileset id="sources" dir="${src.dir}">
+				<include name="**/*.java"/>
+			</fileset>
+		</jar>
+	</target>
+	
+	<target name="bin-dist" depends="jar">
+		<mkdir dir="${dist.dir}" />
+		<copy todir="${dist.dir}/" flatten="true">
+			<resources>
+				<fileset dir="${jar.dir}">
+					<include name="**/*.jar"/>
+				</fileset>
+				<fileset dir="${lib.dir}">
+					<include name="**/*.jar"/>
+				</fileset>
+			</resources>
+		</copy>
+	</target>
+
+	<target name="src-dist">
+			<delete dir="${src.dist.dir}/${source.dist.name}" />
+			<mkdir dir="${src.dist.dir}/${source.dist.name}" />
+			<copy todir="${src.dist.dir}/${source.dist.name}/src">
+				<fileset dir="${src.dir}" />
+			</copy>
+			<copy todir="${src.dist.dir}/${source.dist.name}/${lib.dir}">
+				<fileset dir="${lib.dir}" />
+			</copy>
+			<copy todir="${src.dist.dir}/${source.dist.name}" flatten="true">
+				<resources>
+					<file file="build.xml" />
+				</resources>
+			</copy>
+		</target>
+
+	<target name="zip-dist" depends="bin-dist">
+		<delete dir="${zip.dist.dir}" />
+		<mkdir dir="${zip.dist.dir}" />
+		<zip 
+			destfile="${zip.dist.dir}/${zip.dist.name}"
+			basedir="${dist.dir}"
+			update="true"/> 		
+	</target>
+	
+	<target name="doc">
+		<mkdir dir="${javadoc.dir}" />
+		<javadoc destdir="${javadoc.dir}" overview="${src.dir}/overview.html" 
+      access="public" splitindex="true" use="true">
+			<packageset dir="${src.dir}"/>
+		</javadoc>
+	</target>
+	
+	<target name="run" depends="compile-all">
+		<java classpathref="classpath" classname="cz.cuni.mff.spl.javassist.Main" fork="true">
+			<arg value="1000"/>
+			<arg value="1000"/>
+			<arg value="4"/>
+			<arg value="3"/>
+		</java>
+	</target>
+	
+	<target name="runSort" depends="compile-all">
+		<java classpathref="classpath" classname="cz.cuni.mff.spl.javassist.Starter" fork="true">
+			<jvmarg value="-Xbootclasspath/p:${generated.dir}"/>
+			<arg value="1000"/>
+			<arg value="3"/>
+			<arg value="4"/>
+			<arg value="3"/>
+			<arg value="y"/>
+		</java>
+	</target>
+</project>

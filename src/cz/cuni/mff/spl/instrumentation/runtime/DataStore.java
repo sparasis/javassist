@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class DataStore {
 	/** Main storage of the data. Data are accessed by the name of the data. */
 	private static HashMap<String, DataHolder> data = new HashMap<String, DataHolder>();
-	
+
 	/** 
 	 * Returns {@link DataHolder} object for the passed name. It is created if it does not exist.
 	 * The searching and creating is synchronized.
